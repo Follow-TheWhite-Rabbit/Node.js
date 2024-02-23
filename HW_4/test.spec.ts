@@ -1,7 +1,15 @@
-import filterAnagrams from './index';
+import { Card, Transaction, CurrencyEnum } from './index'; 
 
 test('function', () => {
-    expect(filterAnagrams('abba', ['aabb', 'abcd', 'bbaa', 'dada'])).toEqual(['aabb', 'bbaa']);
-    expect(filterAnagrams('racer', ['crazer', 'carer', 'racar', 'caers', 'racer'])).toEqual(['carer', 'racer']);
-    expect(filterAnagrams('laser', ['lazing', 'lazy', 'lacer'])).toEqual([]);
+    const card = new Card();
+
+    const transaction1: Transaction = new Transaction(100, CurrencyEnum.USD);
+    const transaction2: Transaction = new Transaction(200, CurrencyEnum.UAH);
+
+    card.addTransaction(transaction1);
+    card.addTransaction(transaction2);
+
+    expect(card.getBalance(CurrencyEnum.USD)).toBe(100);
+    expect(card.getBalance(CurrencyEnum.UAH)).toBe(200);
+    expect(card.getTransaction(transaction1.id)).toEqual(transaction1);
 });
