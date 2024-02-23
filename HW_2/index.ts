@@ -49,25 +49,28 @@ class FileDB {
       const records = JSON.parse(data);
       return records.find((record: any) => record.id === id);
     }
-  
-    create(data: Schema): string {
+    
+    create(data: Schema): any {
       const id = generateUniqueId();
-      const newData = { id, ...data };
+      const newData = { id, ...data, createDate: new Date() }; // Добавляем дату создания записи
       const records = this.getAllRecords();
       records.push(newData);
       fs.writeFileSync(`${this.tableName}.json`, JSON.stringify(records, null, 2));
-      return id;
+      return newData; // Возвращаем созданную запись целиком
     }
   
     update(id: string, newData: Partial<Schema>): any {
       const records = this.getAllRecords();
-      const index = records.findIndex((record: any) => record.id === id);
-      if (index === -1) {
+      const recordToUpdate = records.find((record: any) => record.id === id);
+    
+      if (!recordToUpdate) {
         throw new Error(`Record with id ${id} not found`);
       }
-      records[index] = { ...records[index], ...newData };
+    
+      Object.assign(recordToUpdate, newData, { updatedDate: new Date() });
       fs.writeFileSync(`${this.tableName}.json`, JSON.stringify(records, null, 2));
-      return records[index];
+      
+      return recordToUpdate;
     }
   
     delete(id: string): string {
