@@ -30,7 +30,14 @@ class FileDB {
     constructor(tableName: string, schema: Schema) {
       this.tableName = tableName;
       this.schema = schema;
+      this.initializeDatabase();
     }
+
+    private initializeDatabase(): void {
+      if (!fs.existsSync(`${this.tableName}.json`)) {
+          fs.writeFileSync(`${this.tableName}.json`, '[]', 'utf-8');
+      }
+  }
   
     getAll(): any[] {
       const data = fs.readFileSync(`${this.tableName}.json`, 'utf-8');
